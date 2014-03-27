@@ -6,6 +6,13 @@ const FIRE = 70;
 
 var keyState = {};
 
+function GameState(){
+	this.lives = 3;
+	this.collisionDetectionOn = true;
+	this.regenerateTime = 0;
+	this.points = 0;
+}
+
 function Coordinate( anX, anY ){
 	this.x = typeof anX !== 'undefined' ? anX : 0;
 	this.y = typeof anY !== 'undefined' ? anY : 0;
@@ -94,6 +101,7 @@ function RocketShip(){
 	function fire(){
 		var bullet = new Bullet(rocket.position.x, rocket.position.y, rocket.theta+Math.PI, 10+rocket.velocity);
 		bullets.push(bullet);
+		game.points--;
 		
 	}	
 		
@@ -141,9 +149,9 @@ drawRocket = function(){
 	var posString = "(" + rocket.position.x + ", " + rocket.position.y + ")";
 	var velString = rocket.velocity;
 	var accelString = rocket.acceleration;
-	context.fillText( posString, 100, 100 );
-	context.fillText( velString, 100, 150 );
-	context.fillText( accelString, 100, 200 );
+	context.fillText( "Regenerate Counter: " + game.regenerateTime, 100, 250 );
+	context.fillText( "Lives: " + game.lives, 100, 300 );
+	context.fillText( "Points: " + game.points, 100, 350 );
 	rocket.update();
 	context.beginPath();
 	context.moveTo(rocket.leftWing.getX(), rocket.leftWing.getY());
@@ -155,19 +163,74 @@ drawRocket = function(){
 }
 
 checkCollisions = function(){
-	for( var i = 0; i < bullets.length; i++ ){
-		var bullet = bullets[i];
-		if( typeof bullet !== 'undefined' ){
-			for( var j = 0; j < asteroids.length; j++ ){
-				var ast = asteroids[j];
+	for( var i = 0; i < asteroids.length; i++ ){
+		var ast = asteroids[i];
+		if( typeof ast !== 'undefined' ){
+			var dist1 = Math.sqrt(Math.pow(ast.x-rocket.position.x, 2) + Math.pow(ast.y-rocket.position.y, 2));
+			var dist2 = Math.sqrt(Math.pow(ast.x-rocket.leftWing.x, 2) + Math.pow(ast.y-rocket.leftWing.y, 2));
+			var dist3 = Math.sqrt(Math.pow(ast.x-rocket.rightWing.x, 2) + Math.pow(ast.y-rocket.rightWing.y, 2));
+			if (dist1 < ast.radius || dist2 < ast.radius || dist3 < ast.radius)
+			{
+				collide(rocket, ast);
+				break;
+			}
+			for( var j = 0; j < bullets.length; j++ ){
+				var bullet = bullets[j];
 				var dist = Math.sqrt(Math.pow(ast.x-bullet.x, 2) + Math.pow(ast.y-bullet.y, 2));
 				if( dist < bullet.radius + ast.radius ){
-					delete bullet.x;
-					delete ast.x;
+					collide(bullet, ast);
 				}
 			}
 		}
 	}
+}
+
+collide = function( obj1, obj2 )
+{
+	if (Object.getPrototypeOf(obj1) === Bullet.prototype && Object.getPrototypeOf(obj2) === Asteroid.prototype)
+		bulletAsteroidCollision(obj1, obj2);
+	else if (Object.getPrototypeOf(obj1) === RocketShip.prototype && Object.getPrototypeOf(obj2) === Asteroid.prototype)
+		rocketShipAsteroidCollision(obj1, obj2);
+}
+
+bulletAsteroidCollision = function(bullet, asteroid)
+{
+	awardPoints(asteroid.radius);
+	if (asteroid.radius > 25)
+	{
+		var leftHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.radius/2, Math.random()*Math.PI, asteroid.velocity);
+		var rightHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.radius/2, Math.random()*Math.PI, asteroid.velocity);
+		asteroids.push(leftHalf);
+		asteroids.push(rightHalf);
+	}
+	delete bullet.x;
+	delete asteroid.x;
+}
+
+awardPoints = function(asteroidRadius)
+{
+	if(asteroidRadius === 100)
+		game.points += 25;
+	else if(asteroidRadius === 50)
+		game.points += 50;
+	else	//asteroidRadius === 25
+		game.points += 100;
+}
+
+rocketShipAsteroidCollision = function(rocketShip, asteroid)
+{
+	if (asteroid.radius > 25)
+	{
+		var leftHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.radius/2, Math.random()*Math.PI, asteroid.velocity);
+		var rightHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.radius/2, Math.random()*Math.PI, asteroid.velocity);
+		asteroids.push(leftHalf);
+		asteroids.push(rightHalf);
+		delete asteroid.x;
+	}
+	game.lives--;
+	game.collisionDetectionOn = false;
+	game.regenerateTime = 250;
+	rocket = new RocketShip();
 }
 
 function handleInput(){
@@ -191,8 +254,17 @@ function handleInput(){
 }
 
 drawMap = function(){
+	if( game.lives === 0 )
+		clearInterval(refreshID);
 	handleInput();
-	checkCollisions();
+	if (game.collisionDetectionOn)
+		checkCollisions();
+	else
+	{
+		game.regenerateTime--;
+		if (game.regenerateTime === 0)
+			game.collisionDetectionOn = true;
+	}
 	drawRocket();
 	drawAsteroids();
 	drawBullet();
@@ -222,7 +294,9 @@ var rocket = new RocketShip();
 var asteroids = new Array();
 populateAsteroids();
 var bullets = new Array();
+var game = new GameState();
 
 
 //drawCircle();
-setInterval(drawMap, 1);
+var refreshID = setInterval(drawMap, 1);
+//setInterval(handleInput, 10);
