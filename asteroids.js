@@ -156,9 +156,9 @@ drawRocket = function(){
 	var posString = "(" + rocket.position.x + ", " + rocket.position.y + ")";
 	var velString = rocket.velocity;
 	var accelString = rocket.acceleration;
-	context.fillText( "Regenerate Counter: " + game.regenerateTime, 100, 250 );
-	context.fillText( "Lives: " + game.lives, 100, 300 );
-	context.fillText( "Points: " + game.points, 100, 350 );
+	context.font="20px Arial";
+	context.fillText( "Lives: " + game.lives, 100, 20 );
+	context.fillText( "Points: " + game.points, 300, 20 );
 	rocket.update();
 	context.beginPath();
 	context.moveTo(rocket.leftWing.getX(), rocket.leftWing.getY());
