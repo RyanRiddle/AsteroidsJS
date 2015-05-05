@@ -157,9 +157,11 @@ drawRocket = function(){
 	var posString = "(" + rocket.position.x + ", " + rocket.position.y + ")";
 	var velString = rocket.velocity + " " + rocket.velAng;
 	var accelString = rocket.acceleration + " " + rocket.theta;
+	var strDirections = "Directions: arrow keys move, f key fires.";
 	context.font="20px Arial";
 	context.fillText( "Lives: " + game.lives, 100, 20 );
 	context.fillText( "Points: " + game.points, 300, 20 );
+	context.fillText( strDirections, 500, 20 );
 	//context.fillText(posString, 100, 100);
 	//context.fillText(velString, 100, 200);
 	//context.fillText(accelString, 100, 300);
