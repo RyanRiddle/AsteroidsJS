@@ -91,6 +91,9 @@ drawRocket = function()
 
 checkCollisions = function()
 {
+	deadBullets = [];
+	deadAsteroids = [];
+
 	for( var i = 0; i < asteroids.length; i++ ){
 		var ast = asteroids[i];
 		if( typeof ast !== 'undefined' ){
@@ -100,7 +103,7 @@ checkCollisions = function()
 			if (dist1 < ast.radius || dist2 < ast.radius || dist3 < ast.radius)
 			{
 				rocketShipAsteroidCollision(rocket, ast);
-				delete asteroids[i];
+				deadAsteroids.push(i);
 				break;
 			}
 			for( var j = 0; j < bullets.length; j++ ){
@@ -110,13 +113,25 @@ checkCollisions = function()
 					var dist = Math.sqrt(Math.pow(ast.x-bullet.x, 2) + Math.pow(ast.y-bullet.y, 2));
 					if( dist < bullet.radius + ast.radius ){
 						bulletAsteroidCollision(bullet, ast);
-						delete asteroids[i];
-						delete bullets[j];
+						deadAsteroids.push(i);
+						deadBullets.push(j);
 						break;
 					}
 				}
 			}
 		}
+	}
+
+	for (var i = 0; i < deadAsteroids.length; i++)
+	{
+		var ndx = deadAsteroids[i];
+		asteroids.splice(ndx-i, 1);		// remove
+	}
+
+	for (var i = 0; i < deadBullets.length; i++)
+	{
+		var ndx = deadBullets[i];
+		bullets.splice(ndx-i, 1);
 	}
 }
 
@@ -186,32 +201,11 @@ function handleInput()
 	
 }
 
-cleanup = function()
-{
-	var validBullets = new Array();
-	var validAsteroids = new Array();
-	for (var i = 0; i < bullets.length; i++)
-	{
-		var bullet = bullets[i];
-		if (typeof bullet !== 'undefined')
-			validBullets.push(bullet);
-	}
-	bullets = validBullets;
-	for (var i = 0; i < asteroids.length; i++)
-	{
-		var asteroid = asteroids[i];
-		if (typeof asteroid !== 'undefined')
-			validAsteroids.push(asteroid);
-	}
-	asteroids = validAsteroids;
-}
-
 drawMap = function()
 {
 	if( game.lives === 0 )
 		clearInterval(refreshID);
 	handleInput();
-	cleanup();
 	if (game.collisionDetectionOn)
 		checkCollisions();
 	else
