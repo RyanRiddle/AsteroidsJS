@@ -16,24 +16,37 @@ function GameState(){
 function Coordinate( anX, anY ){
 	this.x = typeof anX !== 'undefined' ? anX : 0;
 	this.y = typeof anY !== 'undefined' ? anY : 0;
-	this.getX = getX;
-	this.getY = getY;
-	function getX() { return this.x; }
-	function getY() { return this.y; }
-}
+};
 
-function Bullet(anX, anY, aTheta, aVelocity){
+Coordinate.prototype = 
+{
+	getX: function() 
+	{ 
+		return this.x; 
+	},
+	getY: function()
+	{ 
+		return this.y; 
+	}
+};
+
+function Bullet(anX, anY, aTheta, aVelocity)
+{
 	this.x = typeof anX !== 'undefined' ? anX : 0;
 	this.y = typeof anY !== 'undefined' ? anY : 0;
 	this.radius = 10;
 	this.thetaDirection = typeof aTheta !== 'undefined' ? aTheta : 0;
 	this.velocity = typeof aVelocity !== 'undefined' ? aVelocity : 0;
-	this.update = update;
-	function update(){
+};
+
+Bullet.prototype = 
+{
+	update: function()
+	{
 		this.x += Math.cos(this.thetaDirection)*this.velocity;
 		this.y += Math.sin(this.thetaDirection)*this.velocity;
-	}
-}
+	},
+};
 
 function Asteroid(anX, anY, aR, aTheta, aVelocity){
 	this.x = typeof anX !== 'undefined' ? anX : 0;
@@ -41,8 +54,12 @@ function Asteroid(anX, anY, aR, aTheta, aVelocity){
 	this.radius = typeof aR !== 'undefined' ? aR : 1;
 	this.thetaDirection = typeof aTheta !== 'undefined' ? aTheta : 0.0;
 	this.velocity = typeof aVelocity !== 'undefined' ? aVelocity : 0.0;
-	this.update = update;
-	function update(){
+};
+
+Asteroid.prototype = 
+{
+	update: function()
+	{
 		if (this.x < 0 ){
 			this.x = canvas.width;
 		}
@@ -57,9 +74,8 @@ function Asteroid(anX, anY, aR, aTheta, aVelocity){
 		}
 		this.x += Math.cos(this.thetaDirection)*this.velocity;
 		this.y += Math.sin(this.thetaDirection)*this.velocity;
-	}
-
-}
+	},
+};
 
 function RocketShip(){
 	this.position = new Coordinate(500,500);
@@ -335,6 +351,4 @@ var bullets = new Array();
 var game = new GameState();
 
 
-//drawCircle();
-var refreshID = setInterval(drawMap, 1);
-//setInterval(handleInput, 10);
+var refreshID = setInterval(drawMap, 10);
