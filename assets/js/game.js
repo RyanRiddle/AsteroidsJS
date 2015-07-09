@@ -12,17 +12,16 @@ function GameState(){
 	this.regenerateTime = 0;
 	this.points = 0;
 }
-
-
-
-
 	
 populateAsteroids = function()
 {
 	var r = 100;
-	for( var i = 1; i <= 4; i++ ){
-		var tempAst = new Asteroid(i*100, i*100, r, i*Math.PI/4, 1.0);
-		asteroids.push(tempAst);
+	var nAsteroids = 4;
+	for( var i = 1; i <= nAsteroids; i++ ){
+		var x = i % nAsteroids ? Math.random()*canvas.width : 0;
+		var y = i % nAsteroids ? 0 : Math.random()*canvas.height;
+		var tempAst = new Asteroid(x, y, r, i*Math.PI/4, 1.0);
+			asteroids.push(tempAst);
 	}
 }
 
