@@ -1,5 +1,5 @@
 function RocketShip(){
-	this.position = new Coordinate(500,500);
+	this.position = new Coordinate(canvas.width/2, canvas.height/2);
 	this.velocity = 0.0;
 	this.velAng = 0.0;
 	this.acceleration=0.0;
