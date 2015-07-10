@@ -25,14 +25,6 @@ populateAsteroids = function()
 	}
 }
 
-drawCircle = function(x, y, r)
-{
-	context.beginPath();
-	context.arc(x, y, r, 2*Math.PI, false);
-	context.strokeStyle = 'white';
-	context.lineWidth = 1;
-	context.stroke();
-}
 
 drawAsteroids = function()
 {
@@ -40,7 +32,7 @@ drawAsteroids = function()
 		if (typeof asteroids[i] === 'undefined')
 			continue;
 		asteroids[i].update();
-		drawCircle(asteroids[i].x, asteroids[i].y, asteroids[i].radius);
+		asteroids[i].draw(context);
 	}
 }
 
@@ -56,7 +48,7 @@ drawBullet = function()
 			}	
 			bullet.update();
 			if( typeof bullet !== 'undefined' ){
-				drawCircle(bullet.x, bullet.y, 10);
+				bullet.draw(context);
 			}
 		}
 	}
@@ -99,7 +91,7 @@ checkCollisions = function()
 			var dist1 = Math.sqrt(Math.pow(ast.x-rocket.position.x, 2) + Math.pow(ast.y-rocket.position.y, 2));
 			var dist2 = Math.sqrt(Math.pow(ast.x-rocket.leftWing.x, 2) + Math.pow(ast.y-rocket.leftWing.y, 2));
 			var dist3 = Math.sqrt(Math.pow(ast.x-rocket.rightWing.x, 2) + Math.pow(ast.y-rocket.rightWing.y, 2));
-			if (dist1 < ast.radius || dist2 < ast.radius || dist3 < ast.radius)
+			if (dist1 < ast.r || dist2 < ast.r || dist3 < ast.r)
 			{
 				rocketShipAsteroidCollision(rocket, ast);
 				deadAsteroids.push(i);
@@ -110,7 +102,7 @@ checkCollisions = function()
 				if (typeof bullet !== 'undefined' )
 				{
 					var dist = Math.sqrt(Math.pow(ast.x-bullet.x, 2) + Math.pow(ast.y-bullet.y, 2));
-					if( dist < bullet.radius + ast.radius ){
+					if( dist < bullet.r + ast.r ){
 						bulletAsteroidCollision(bullet, ast);
 						deadAsteroids.push(i);
 						deadBullets.push(j);
@@ -144,11 +136,11 @@ collide = function( obj1, obj2 )
 
 bulletAsteroidCollision = function(bullet, asteroid)
 {
-	awardPoints(asteroid.radius);
-	if (asteroid.radius > 25)
+	awardPoints(asteroid.r);
+	if (asteroid.r > 25)
 	{
-		var leftHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.radius/2, Math.random()*Math.PI, asteroid.velocity);
-		var rightHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.radius/2, Math.random()*Math.PI, asteroid.velocity);
+		var leftHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.r/2, Math.random()*Math.PI, asteroid.velocity);
+		var rightHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.r/2, Math.random()*Math.PI, asteroid.velocity);
 		asteroids.push(leftHalf);
 		asteroids.push(rightHalf);
 	}
@@ -166,10 +158,10 @@ awardPoints = function(asteroidRadius)
 
 rocketShipAsteroidCollision = function(rocketShip, asteroid)
 {
-	if (asteroid.radius > 25)
+	if (asteroid.r > 25)
 	{
-		var leftHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.radius/2, Math.random()*Math.PI, asteroid.velocity);
-		var rightHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.radius/2, Math.random()*Math.PI, asteroid.velocity);
+		var leftHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.r/2, Math.random()*Math.PI, asteroid.velocity);
+		var rightHalf = new Asteroid(asteroid.x, asteroid.y, asteroid.r/2, Math.random()*Math.PI, asteroid.velocity);
 		asteroids.push(leftHalf);
 		asteroids.push(rightHalf);
 	}
