@@ -46,4 +46,28 @@ RocketShip.prototype = {
 		game.points--;
 		
 	},
+
+
+	draw: function(context)
+	{
+		rocket.update();
+		context.fillStyle = 'white';
+		context.beginPath();
+		context.moveTo(rocket.leftWing.getX(), rocket.leftWing.getY());
+		context.lineTo(rocket.position.getX(), rocket.position.getY());
+		context.lineTo(rocket.rightWing.getX(), rocket.rightWing.getY());
+		context.strokeStyle = 'white';
+		context.stroke();
+
+	},
+	report: function()
+	{
+		var posString = "(" + rocket.position.x + ", " + rocket.position.y + ")";
+		var velString = rocket.velocity + " " + rocket.velAng;
+		var accelString = rocket.acceleration + " " + rocket.theta;
+		
+		context.fillText(posString, 100, 100);
+		context.fillText(velString, 100, 200);
+		context.fillText(accelString, 100, 300);
+	},
 };

@@ -45,30 +45,6 @@ drawBullets = function()
 }
 	
 
-drawRocket = function()
-{
-	context.clearRect(0,0,canvas.width, canvas.height);
-	context.fillStyle = 'white';
-	var posString = "(" + rocket.position.x + ", " + rocket.position.y + ")";
-	var velString = rocket.velocity + " " + rocket.velAng;
-	var accelString = rocket.acceleration + " " + rocket.theta;
-	var strDirections = "Directions: arrow keys move, f key fires.";
-	context.font="20px Arial";
-	context.fillText( "Lives: " + game.lives, 100, 20 );
-	context.fillText( "Points: " + game.points, 300, 20 );
-	context.fillText( strDirections, 500, 20 );
-	//context.fillText(posString, 100, 100);
-	//context.fillText(velString, 100, 200);
-	//context.fillText(accelString, 100, 300);
-	rocket.update();
-	context.beginPath();
-	context.moveTo(rocket.leftWing.getX(), rocket.leftWing.getY());
-	context.lineTo(rocket.position.getX(), rocket.position.getY());
-	context.lineTo(rocket.rightWing.getX(), rocket.rightWing.getY());
-	context.strokeStyle = 'white';
-	context.stroke();
-
-}
 
 checkCollisions = function()
 {
@@ -182,6 +158,16 @@ function handleInput()
 	
 }
 
+drawGameInfo = function()
+{
+	context.fillStyle = 'white';
+	var strDirections = "Directions: arrow keys move, f key fires.";
+	context.font="20px Arial";
+	context.fillText( "Lives: " + game.lives, 100, 20 );
+	context.fillText( "Points: " + game.points, 300, 20 );
+	context.fillText( strDirections, 500, 20 );
+}
+
 drawMap = function()
 {
 	if( game.lives === 0 )
@@ -195,7 +181,9 @@ drawMap = function()
 		if (game.regenerateTime === 0)
 			game.collisionDetectionOn = true;
 	}
-	drawRocket();
+	context.clearRect(0,0,canvas.width, canvas.height);
+	drawGameInfo();
+	rocket.draw(context);
 	drawAsteroids();
 	drawBullets();
 }
