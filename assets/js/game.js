@@ -28,30 +28,20 @@ populateAsteroids = function()
 
 drawAsteroids = function()
 {
-	for( var i = 0; i < asteroids.length; i++ ){
-		if (typeof asteroids[i] === 'undefined')
-			continue;
-		asteroids[i].update();
-		asteroids[i].draw(context);
-	}
+	asteroids.forEach(function(asteroid)
+	{
+		asteroid.update();
+		asteroid.draw(context);
+	});
 }
 
-drawBullet = function()
+drawBullets = function()
 {
-	for( var i = 0; i < bullets.length; i++ ){
-		var bullet = bullets[i];
-		if( typeof bullet !== 'undefined' ){
-			if( bullet.x > canvas.width + 10 || bullet.x < -10 || bullet.y > canvas.height + 10 || bullet.y < -10)
-			{
-				delete bullet[i];
-				continue;
-			}	
-			bullet.update();
-			if( typeof bullet !== 'undefined' ){
-				bullet.draw(context);
-			}
-		}
-	}
+	bullets.forEach(function(bullet)
+	{
+		bullet.update();
+		bullet.draw(context);
+	});
 }
 	
 
@@ -207,7 +197,7 @@ drawMap = function()
 	}
 	drawRocket();
 	drawAsteroids();
-	drawBullet();
+	drawBullets();
 }
 
 window.onkeydown = function(e)
