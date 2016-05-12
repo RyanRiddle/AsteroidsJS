@@ -41,7 +41,7 @@ RocketShip.prototype = {
 	},
 	
 	fire: function(){
-		var bullet = new Bullet(rocket.position.x, rocket.position.y, rocket.theta+Math.PI, 10+rocket.velocity);
+		var bullet = new Bullet(rocket.position.x, rocket.position.y, rocket.theta+Math.PI, 30+rocket.velocity);
 		bullets.push(bullet);
 		game.points--;
 		

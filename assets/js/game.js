@@ -20,7 +20,7 @@ populateAsteroids = function()
 	for( var i = 1; i <= nAsteroids; i++ ){
 		var x = i % nAsteroids ? Math.random()*canvas.width : 0;
 		var y = i % nAsteroids ? 0 : Math.random()*canvas.height;
-		var tempAst = new Asteroid(x, y, r, i*Math.PI/4, 1.0);
+		var tempAst = new Asteroid(x, y, r, i*Math.PI/4, 2.0);
 			asteroids.push(tempAst);
 	}
 }
@@ -140,16 +140,16 @@ rocketShipAsteroidCollision = function(rocketShip, asteroid)
 function handleInput()
 {
 	if( keyState[LEFT] ){
-		rocket.theta -= Math.PI/180.0;
+		rocket.theta -= Math.PI/60.0;
 	}
 	if ( keyState[RIGHT] ){
-		rocket.theta += Math.PI/180.0;
+		rocket.theta += Math.PI/60.0;
 	}
 	if ( keyState[UP] == true ){
-		rocket.acceleration -= 0.0005;
+		rocket.acceleration -= 0.005;
 	}
 	if ( keyState[DOWN] == true ){
-		rocket.acceleration += 0.0005;
+		rocket.acceleration += 0.005;
 	}
 	if ( keyState[FIRE] ){
 		//rocket.fire();
@@ -216,5 +216,9 @@ populateAsteroids();
 var bullets = new Array();
 var game = new GameState();
 
-
-var refreshID = setInterval(drawMap, 10);
+var animate = function()
+{
+	drawMap();
+	window.requestAnimationFrame(animate);
+}; 
+requestAnimationFrame(animate);
